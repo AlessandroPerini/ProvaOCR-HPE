@@ -17,15 +17,16 @@ public class ExampleHPE {
                                   "jpg","jpg","png","jpg","jpg","jpg","tif",
                                   "tif","png","gif","gif","png","png"};
         
-        for (i = 1; i < 21; i++) {
+        for (i = 1; i < 2; i++) {
    
             Supporto supporto = new Supporto("HPE");
             String fileToConvert = "C:\\Users\\aless\\Desktop\\scanned_doc\\dir"+i+"\\img"+i+"."+estensione[i];
             Converter converter = new Converter();
             supporto.timerStart();
-            converter.doOCR(fileToConvert);
+            String result = converter.doOCR(fileToConvert);
             supporto.timerStop();
             System.out.println("\n - "+fileToConvert);
+            supporto.fileOut(fileToConvert, result);
             
         }
         

@@ -22,8 +22,9 @@ class Converter implements IHODClientCallback {
     HODResponseParser parser = new HODResponseParser();
     String hodApp = "";
     String filePath;
+    String finalResult = "";
     
-    public void doOCR(String filePath) {
+    public String doOCR(String filePath) {
         
         this.filePath = filePath;
         hodApp = HODApps.OCR_DOCUMENT;
@@ -38,13 +39,13 @@ class Converter implements IHODClientCallback {
         params.put("file", mediaFile);
         params.put("language", "en-US");
         
-        System.out.println("Processing...\n\n");
         client.PostRequest(params, hodApp, HODClient.REQ_MODE.ASYNC);
-        resultOCR("");
+        return resultOCR("");
     }
     
-    public void resultOCR(String response){
+    public String resultOCR(String response){
         requestCompletedWithContent(response);
+        return finalResult;
     }
     
     @Override
@@ -52,12 +53,11 @@ class Converter implements IHODClientCallback {
         
         OCRDocumentResponse resp = parser.ParseOCRDocumentResponse(response);
         if (resp != null) {
-            String result = "Recognized text:\r\n\n";
             for (OCRDocumentResponse.TextBlock doc : resp.text_block)
             {
-                result += doc.text;
+                finalResult += doc.text;
             }
-            System.out.println(result);
+            //System.out.println(result);
         } else {
             List<HODErrorObject> errors = parser.GetLastError();
             for (HODErrorObject err : errors) {
@@ -82,7 +82,7 @@ class Converter implements IHODClientCallback {
                     result += "Code: " + String.format("%d\r\n", err.error);
                     result += "Reason: " + err.reason + "\r\n";
                     result += "Detail: " + err.detail + "\r\n";
-                    System.out.println(result);
+                    //System.out.println(result);
                 }
             }
         }
